@@ -47,9 +47,50 @@ export const getFileContent = async (accessToken: string, fileId: string) => {
   return res.json();
 };
 
+export const renameFileOnDrive = async (accessToken: string, fileId: string, newName: string) => {
+  try {
+    const res = await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}`, {
+      method: 'PATCH',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ name: newName })
+    });
+    if (!res.ok) {
+      console.warn('Failed to rename file:', await res.text());
+    }
+  } catch (e) {
+    console.error('Error renaming file:', e);
+  }
+};
+
 export const generateFileName = (mapel: string, fase: string, kelas: string) => {
   const cleanMapel = mapel.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/(^_|_$)/g, '');
-  return `identitas_${cleanMapel}_${fase}_${kelas}.json`;
+  const cleanFase = fase.toLowerCase().trim();
+  const cleanKelas = kelas.toLowerCase().trim();
+  return `identitas_${cleanMapel}_${cleanFase}_${cleanKelas}.json`;
+};
+
+export const getFileIdAndNormalize = async (accessToken: string, targetName: string, parentId: string) => {
+  const query = `name contains 'identitas_' and name contains '.json' and trashed=false and '${parentId}' in parents`;
+  const res = await fetch(`https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(query)}&fields=files(id,name)`, {
+    headers: { Authorization: `Bearer ${accessToken}` }
+  });
+  const data = await res.json();
+  
+  if (data.files && data.files.length > 0) {
+    for (const file of data.files) {
+      if (file.name.toLowerCase() === targetName.toLowerCase()) {
+        if (file.name !== targetName) {
+          console.log(`Renaming ${file.name} to ${targetName} for standard lowercase format...`);
+          await renameFileOnDrive(accessToken, file.id, targetName);
+        }
+        return file.id;
+      }
+    }
+  }
+  return null;
 };
 
 export const saveIdentityToDrive = async (accessToken: string, guruId: string, identityData: SchoolIdentity) => {
@@ -61,7 +102,7 @@ export const saveIdentityToDrive = async (accessToken: string, guruId: string, i
   
   // 3. Check if file exists based on Mapel, Fase, and Kelas
   const fileName = generateFileName(identityData.mataPelajaran, identityData.fase, identityData.kelas);
-  const existingId = await getFileId(accessToken, fileName, guruFolderId);
+  const existingId = await getFileIdAndNormalize(accessToken, fileName, guruFolderId);
   
   const metadata = {
     name: fileName,
@@ -113,12 +154,24 @@ export const loadIdentityFromDrive = async (accessToken: string, guruId: string,
   let fileId = null;
   if (specificMapel && specificFase && specificKelas) {
     const fileName = generateFileName(specificMapel, specificFase, specificKelas);
-    fileId = await getFileId(accessToken, fileName, guruFolderId);
+    fileId = await getFileIdAndNormalize(accessToken, fileName, guruFolderId);
   }
   
   if (!fileId) {
-    // Fallback to load the latest saved identity file if no specific config is requested or found
-    fileId = await getLatestIdentityFileId(accessToken, guruFolderId);
+    const query = `name contains 'identitas_' and name contains '.json' and trashed=false and '${guruFolderId}' in parents`;
+    const res = await fetch(`https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(query)}&orderBy=modifiedTime desc&fields=files(id,name)`, {
+      headers: { Authorization: `Bearer ${accessToken}` }
+    });
+    const data = await res.json();
+    if (data.files && data.files.length > 0) {
+      const latestFile = data.files[0];
+      const normalizedName = latestFile.name.toLowerCase();
+      if (latestFile.name !== normalizedName) {
+        console.log(`Renaming latest loaded file ${latestFile.name} to ${normalizedName} for standardization...`);
+        await renameFileOnDrive(accessToken, latestFile.id, normalizedName);
+      }
+      fileId = latestFile.id;
+    }
   }
   
   if (fileId) {
