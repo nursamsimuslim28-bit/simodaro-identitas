@@ -237,6 +237,11 @@
             <!-- Moon Icon (shown when dark mode) -->
             <svg class='w-3.5 h-3.5 text-indigo-400' fill='none' id='theme-icon-moon' stroke='currentColor' viewBox='0 0 24 24'><path d='M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z' stroke-linecap='round' stroke-linejoin='round' stroke-width='2.5'/></svg>
           </button>
+
+          <!-- Tutup Menu (Hanya Tampil di Smartphone) -->
+          <button class='md:hidden p-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 hover:bg-emerald-500/20 transition shadow-md cursor-pointer flex items-center justify-center shrink-0' onclick='toggleSidebar()' title='Tutup Menu Samping'>
+            <svg class='w-3.5 h-3.5' fill='none' stroke='currentColor' viewBox='0 0 24 24'><path d='M6 18L18 6M6 6l12 12' stroke-linecap='round' stroke-linejoin='round' stroke-width='2.5'/></svg>
+          </button>
         </div>
         <div class='h-[1px] bg-gradient-to-r from-slate-800 to-transparent'/>
       </div>
@@ -722,6 +727,14 @@
         
         if (iframe) iframe.src = fullUrl;
       }
+
+      // Otomatis tutup menu samping di smartphone setelah memilih modul
+      if (window.innerWidth < 768) {
+        const sidebar = document.getElementById("sidebar-panel");
+        if (sidebar && !sidebar.classList.contains("sidebar-collapsed")) {
+          sidebar.classList.add("sidebar-collapsed");
+        }
+      }
     }
 
     function syncGlobalState() {
@@ -895,6 +908,14 @@
 
     // Initial load
     renderModules();
+
+    // Tutup menu samping secara default jika dibuka di smartphone
+    if (window.innerWidth < 768) {
+      const sidebar = document.getElementById("sidebar-panel");
+      if (sidebar) {
+        sidebar.classList.add("sidebar-collapsed");
+      }
+    }
 
     // Watch for postMessage feedback from modular apps
     window.addEventListener("message", (event) => {

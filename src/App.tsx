@@ -105,7 +105,7 @@ export default function App() {
     } catch (err: any) {
       console.error("Login failed:", err);
       if (err?.code === 'auth/unauthorized-domain') {
-         setLoginError("Domain belum diizinkan oleh Firebase. Silakan akses aplikasi melalui link resmi (Blogger).");
+         setLoginError(`Domain belum diizinkan oleh Firebase. Buka Firebase Console -> Authentication -> Settings -> Authorized domains, lalu tambahkan domain ini: ${window.location.hostname}`);
       } else {
          setLoginError(err.message || "Gagal masuk. Pastikan koneksi internet stabil.");
       }

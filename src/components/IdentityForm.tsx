@@ -41,6 +41,7 @@ const FASE_KELAS_MAP: Record<string, string[]> = {
 export default function IdentityForm({ guruId, initialData, onSave, theme = 'light' }: Props) {
   const [isSaving, setIsSaving] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
   const isDark = theme === 'dark';
 
   const [isCustomMapel, setIsCustomMapel] = useState(() => {
@@ -91,30 +92,31 @@ export default function IdentityForm({ guruId, initialData, onSave, theme = 'lig
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrorMsg("");
     
     // Strict Validation
     if (!formData.namaGuru || !formData.nip || !formData.mataPelajaran || !formData.fase || !formData.kelas || !formData.tahunPelajaran || !formData.namaKepalaSekolah || !formData.nipKepalaSekolah || !formData.formatTandaTangan) {
-      alert("Harap lengkapi semua formulir sebelum menyimpan. Tidak boleh ada yang kosong.");
+      setErrorMsg("Harap lengkapi semua formulir sebelum menyimpan. Tidak boleh ada yang kosong.");
       return;
     }
 
     if (formData.nip !== '-' && !/^\d+$/.test(formData.nip || '')) {
-      alert("NIP Guru hanya boleh berisi angka atau tulis '-' jika honorer.");
+      setErrorMsg("NIP Guru hanya boleh berisi angka atau tulis '-' jika honorer.");
       return;
     }
 
     if (formData.nip !== '-' && formData.nip?.length !== 18) {
-      alert("NIP Guru harus 18 digit angka atau tulis '-' jika honorer.");
+      setErrorMsg("NIP Guru harus 18 digit angka atau tulis '-' jika honorer.");
       return;
     }
 
     if (formData.nipKepalaSekolah !== '-' && !/^\d+$/.test(formData.nipKepalaSekolah || '')) {
-      alert("NIP Kepala Sekolah hanya boleh berisi angka atau tulis '-' jika tidak memiliki NIP.");
+      setErrorMsg("NIP Kepala Sekolah hanya boleh berisi angka atau tulis '-' jika tidak memiliki NIP.");
       return;
     }
     
     if (formData.nipKepalaSekolah !== '-' && formData.nipKepalaSekolah?.length !== 18) {
-      alert("NIP Kepala Sekolah harus 18 digit angka atau tulis '-' jika tidak memiliki NIP.");
+      setErrorMsg("NIP Kepala Sekolah harus 18 digit angka atau tulis '-' jika tidak memiliki NIP.");
       return;
     }
 
@@ -126,7 +128,7 @@ export default function IdentityForm({ guruId, initialData, onSave, theme = 'lig
       setTimeout(() => setShowSuccess(false), 3000);
     } catch (error) {
       console.error(error);
-      alert("Gagal menyimpan data ke Google Drive.");
+      setErrorMsg("Gagal menyimpan data ke Google Drive.");
     } finally {
       setIsSaving(false);
     }
@@ -151,6 +153,13 @@ export default function IdentityForm({ guruId, initialData, onSave, theme = 'lig
 
         <form onSubmit={handleSubmit} className="space-y-8">
           
+          {errorMsg && (
+            <div className="bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 px-4 py-3 rounded-xl flex items-start gap-3">
+              <svg className="w-5 h-5 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+              <span className="text-sm font-medium leading-relaxed">{errorMsg}</span>
+            </div>
+          )}
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="md:col-span-2">
               <label className={`block text-sm font-bold mb-2 tracking-wide ${isDark ? 'text-slate-300' : 'text-[#0F172A]'}`}>Nama Lengkap & Gelar</label>
