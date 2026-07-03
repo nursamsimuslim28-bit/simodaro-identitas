@@ -1,0 +1,926 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html lang='id' xmlns='http://www.w3.org/1999/xhtml' xmlns:b='http://www.google.com/2005/gml/b' xmlns:data='http://www.google.com/2005/gml/data' xmlns:expr='http://www.google.com/2005/gml/expr'>
+<head>
+  <meta charset='utf-8'/>
+  <meta content='width=device-width, initial-scale=1.0' name='viewport'/>
+  <title>PORTAL AKADEMIK SIMODARO</title>
+
+  <!-- Blogger Mandatory b:skin -->
+  <b:skin><![CDATA[
+  /* Minimum CSS required by Blogger */
+  body {
+    margin: 0;
+    padding: 0;
+  }
+  ]]></b:skin>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src='https://cdn.tailwindcss.com'/>
+  
+  <!-- Firebase App & Firestore Compat SDKs -->
+  <script src='https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js'/>
+  <script src='https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js'/>
+
+  <!-- Google Font (Space Grotesk & Inter) -->
+  <link href='https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&amp;family=Inter:wght@400;500;600;700&amp;family=Fira+Code:wght@400;500&amp;display=swap' rel='stylesheet'/>
+  
+  <style>
+    :root {
+      --theme-accent: #10b981;
+    }
+    body {
+      font-family: &#39;Inter&#39;, sans-serif;
+    }
+    .display-font {
+      font-family: &#39;Space Grotesk&#39;, sans-serif;
+    }
+    .mono-font {
+      font-family: &#39;Fira Code&#39;, monospace;
+    }
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0f172a;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--theme-accent);
+      border-radius: 9999px;
+    }
+    
+    /* Sidebar collapse transition styling */
+    #sidebar-panel {
+      transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .sidebar-collapsed {
+      width: 0 !important;
+      min-width: 0 !important;
+      overflow: hidden !important;
+      border-right-width: 0 !important;
+      padding: 0 !important;
+    }
+    @media (max-width: 768px) {
+      .sidebar-collapsed {
+        height: 0 !important;
+        min-height: 0 !important;
+        border-bottom-width: 0 !important;
+      }
+    }
+    .animate-spin-hover:hover {
+      transform: rotate(45deg);
+      transition: transform 0.3s ease;
+    }
+
+    /* ======================================================== */
+    /* NATIVE LIGHT MODE dan HIGH CONTRAST OVERRIDES FOR BLOGGER */
+    /* ======================================================== */
+    body.light-mode {
+      background-color: #f8fafc !important; /* bg-slate-50 */
+      color: #0f172a !important;
+    }
+    body.light-mode #hub-portal-splash {
+      background-color: #f1f5f9 !important;
+    }
+    body.light-mode #sidebar-panel {
+      background-color: #ffffff !important;
+      border-color: #cbd5e1 !important;
+    }
+    body.light-mode input,
+    body.light-mode select,
+    body.light-mode textarea {
+      background-color: #ffffff !important;
+      color: #0f172a !important;
+      border-color: #475569 !important;
+      border-width: 1.5px !important;
+    }
+    body.light-mode .bg-slate-900,
+    body.light-mode .bg-slate-950,
+    body.light-mode .bg-slate-900/60,
+    body.light-mode .bg-slate-900/50,
+    body.light-mode .bg-slate-900/40,
+    body.light-mode .bg-slate-950/80,
+    body.light-mode .bg-slate-950/50 {
+      background-color: #ffffff !important;
+      border-color: #94a3b8 !important;
+      color: #0f172a !important;
+      border-width: 1px !important;
+    }
+    body.light-mode p {
+      color: #0f172a !important;
+      text-align: justify !important;
+      font-weight: 500 !important;
+    }
+    body.light-mode h1,
+    body.light-mode h2,
+    body.light-mode h3,
+    body.light-mode h4,
+    body.light-mode h5,
+    body.light-mode h6 {
+      color: #0f172a !important;
+      font-weight: 800 !important;
+    }
+    body.light-mode .text-slate-400,
+    body.light-mode .text-slate-300,
+    body.light-mode .text-slate-500,
+    body.light-mode .text-slate-600 {
+      color: #334155 !important; /* text-slate-700 for high-contrast */
+      font-weight: 600 !important;
+    }
+    body.light-mode #active-mod-indicator {
+      border: 1px solid #475569;
+    }
+    body.light-mode .border-slate-800,
+    body.light-mode .border-slate-850,
+    body.light-mode .border-slate-900 {
+      border-color: #cbd5e1 !important;
+    }
+    body.light-mode .bg-slate-950/20 {
+      background-color: #f1f5f9 !important;
+      border-color: #94a3b8 !important;
+    }
+  </style>
+</head>
+<body class='bg-slate-950 text-slate-100 h-screen w-screen flex flex-col md:flex-row overflow-hidden transition-colors duration-300'>
+
+  <!-- Elegant Splash Screen Overlay for Blogger Hub -->
+  <div class='fixed inset-0 bg-slate-950 z-[9999] flex flex-col items-center justify-center transition-all duration-700 pointer-events-auto' id='hub-portal-splash'>
+    <div class='space-y-6 text-center max-w-sm px-6 animate-pulse'>
+      <div class='relative flex items-center justify-center mx-auto'>
+        <div class='absolute w-24 h-24 rounded-full bg-emerald-500/20 blur-xl animate-ping' style='animation-duration: 3s'/>
+        <div class='p-5 rounded-3xl bg-gradient-to-tr from-emerald-600 to-teal-500 shadow-2xl text-white relative'>
+          <svg class='w-10 h-10 animate-spin' fill='none' stroke='currentColor' style='animation-duration: 8s' viewBox='0 0 24 24'>
+            <path d='M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 00-3.7-3.7 48.656 48.656 0 00-7.324 0 4.006 4.006 0 00-3.7 3.7C4.547 9.547 4.5 10.768 4.5 12s.047 2.453.138 3.662a4.006 4.006 0 003.7 3.7 48.656 48.656 0 007.324 0 4.006 4.006 0 003.7-3.7c.092-1.209.138-2.43.138-3.662z' stroke-linecap='round' stroke-linejoin='round' stroke-width='2.5'/>
+          </svg>
+        </div>
+      </div>
+      <div class='space-y-2'>
+        <h1 class='text-lg font-black tracking-[0.2em] display-font bg-gradient-to-r from-emerald-400 to-teal-300 bg-clip-text text-transparent uppercase'>siModArO</h1>
+        <p class='text-[9px] font-mono tracking-widest text-emerald-500 uppercase font-bold'>PORTAL AKADEMIK MODULAR</p>
+        <p class='text-[8px] font-mono text-slate-500 uppercase tracking-wider'>SMAN 1 AMONGGEDO</p>
+      </div>
+      <div class='w-32 h-[2px] bg-slate-900 rounded-full mx-auto overflow-hidden'>
+        <div class='h-full bg-emerald-500 animate-[loading_2s_ease-in-out_infinite]' style='width: 40%'/>
+      </div>
+      <p class='text-[7.5px] font-mono text-slate-600 uppercase tracking-widest'>Administrasi Setahun Tuntas Sekejap</p>
+    </div>
+  </div>
+  <style>
+    @keyframes loading {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(250%); }
+    }
+  </style>
+  <script>
+    // Theme Switcher Engine for Blogger
+    function applyBloggerTheme(isLight) {
+      const body = document.body;
+      const iconSun = document.getElementById("theme-icon-sun");
+      const iconMoon = document.getElementById("theme-icon-moon");
+      
+      if (isLight) {
+        body.classList.add("light-mode");
+        if (iconSun) iconSun.classList.remove("hidden");
+        if (iconMoon) iconMoon.classList.add("hidden");
+      } else {
+        body.classList.remove("light-mode");
+        if (iconSun) iconSun.classList.add("hidden");
+        if (iconMoon) iconMoon.classList.remove("hidden");
+      }
+    }
+
+    function toggleBloggerTheme() {
+      const isLight = !document.body.classList.contains("light-mode");
+      applyBloggerTheme(isLight);
+      localStorage.setItem("blogger_theme_mode", isLight ? "light" : "dark");
+    }
+
+    // Load theme on startup
+    const savedTheme = localStorage.getItem("blogger_theme_mode");
+    const prefersLight = savedTheme === "light";
+    applyBloggerTheme(prefersLight);
+
+    setTimeout(() => {
+      const splash = document.getElementById("hub-portal-splash");
+      if (splash) {
+        splash.style.opacity = "0";
+        splash.style.transform = "translateY(-20px)";
+        splash.style.pointerEvents = "none";
+        setTimeout(() => splash.remove(), 700);
+      }
+    }, 2500);
+  </script>
+
+  <!-- Sidebar Kontrol (Hanya untuk Sesi / Akun Guru) -->
+  <aside class='w-full md:w-80 md:h-full shrink-0 bg-slate-900 border-b md:border-b-0 md:border-r border-slate-800 flex flex-col justify-between z-30 overflow-hidden' id='sidebar-panel'>
+    <div class='flex-1 p-5 space-y-6 overflow-y-auto min-h-0'>
+      
+      <!-- Logo Branding & Status -->
+      <div class='space-y-2'>
+        <div class='flex items-center justify-between gap-2.5 w-full'>
+          <div class='flex items-center gap-2.5'>
+            <div class='p-2 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-500 shadow-lg text-white'>
+              <svg class='w-5 h-5' fill='none' stroke='currentColor' viewBox='0 0 24 24'><path d='M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 00-3.7-3.7 48.656 48.656 0 00-7.324 0 4.006 4.006 0 00-3.7 3.7C4.547 9.547 4.5 10.768 4.5 12s.047 2.453.138 3.662a4.006 4.006 0 003.7 3.7 48.656 48.656 0 007.324 0 4.006 4.006 0 003.7-3.7c.092-1.209.138-2.43.138-3.662z' stroke-linecap='round' stroke-linejoin='round' stroke-width='2.5'/><path d='M12 9v6m3-3H9' stroke-linecap='round' stroke-linejoin='round' stroke-width='2.5'/></svg>
+            </div>
+            <div>
+              <h1 class='text-xs font-black tracking-widest display-font bg-gradient-to-r from-emerald-400 to-teal-300 bg-clip-text text-transparent'>SIMODARO</h1>
+              <p class='text-[8px] font-mono tracking-wider text-slate-400 uppercase'>SMAN 1 Amonggedo</p>
+            </div>
+          </div>
+          
+          <!-- Blogger Theme Mode Switcher Toggle Button -->
+          <button class='p-1.5 rounded-lg bg-slate-850 border border-slate-750 text-slate-300 hover:text-white hover:bg-slate-800 transition shadow-md cursor-pointer flex items-center justify-center shrink-0' id='blogger-theme-toggle' onclick='toggleBloggerTheme()' title='Ganti Tema Terang/Gelap'>
+            <!-- Sun Icon (shown when light mode) -->
+            <svg class='w-3.5 h-3.5 hidden text-amber-400' fill='none' id='theme-icon-sun' stroke='currentColor' viewBox='0 0 24 24'><path d='M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z' stroke-linecap='round' stroke-linejoin='round' stroke-width='2.5'/></svg>
+            <!-- Moon Icon (shown when dark mode) -->
+            <svg class='w-3.5 h-3.5 text-indigo-400' fill='none' id='theme-icon-moon' stroke='currentColor' viewBox='0 0 24 24'><path d='M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z' stroke-linecap='round' stroke-linejoin='round' stroke-width='2.5'/></svg>
+          </button>
+        </div>
+        <div class='h-[1px] bg-gradient-to-r from-slate-800 to-transparent'/>
+      </div>
+
+      <!-- Sesi Akun Guru Aktif -->
+      <div class='p-3.5 bg-slate-950 rounded-xl border border-slate-800/80 space-y-3'>
+        <span class='text-[9px] uppercase font-mono tracking-wider text-emerald-400 block font-bold border-l border-emerald-500 pl-1.5'>IDENTITAS GURU AKTIF:</span>
+        
+        <div class='space-y-2'>
+          <!-- GURUID section with hover tooltip and WhatsApp + Donation details -->
+          <div class='space-y-1 relative group'>
+            <div class='flex items-center justify-between'>
+              <label class='text-[8px] uppercase font-mono tracking-wider text-slate-500 font-bold block'>GURUID REKOR / REGISTER:</label>
+              <!-- Interactive Information Badge for Tooltip -->
+              <span class='text-[8.5px] font-bold text-emerald-400 cursor-pointer flex items-center gap-1 animate-pulse' title='Butuh GuruID?'>
+                <svg class='w-3 h-3' fill='none' stroke='currentColor' viewBox='0 0 24 24'><path d='M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z' stroke-linecap='round' stroke-linejoin='round' stroke-width='2.5'/></svg>
+                <span>Info</span>
+              </span>
+            </div>
+            
+            <!-- Tooltip above input -->
+            <div class='absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 p-3 bg-slate-900 border border-slate-700 text-slate-200 rounded-xl shadow-2xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 text-[9px] font-medium leading-relaxed text-justify'>
+              <div class='font-extrabold text-[9.5px] text-emerald-400 mb-1 border-b border-slate-800 pb-0.5'>INFO AKUN GURUID</div>
+              Silakan hubungi admin untuk mendapatkan GuruID resmi SMAN 1 Amonggedo agar data perangkat ajar Anda dapat tersimpan di cloud.
+            </div>
+
+            <input class='w-full px-2.5 py-1.5 bg-slate-900 border border-slate-800/80 rounded-lg text-[9.5px] text-slate-200 focus:outline-none focus:border-emerald-500 placeholder:text-slate-600 font-mono' id='hub-guruid' onchange='syncGlobalState()' placeholder='Belum Terdaftar' type='text'/>
+          </div>
+
+          <div class='space-y-1'>
+            <label class='text-[8px] uppercase font-mono tracking-wider text-slate-500 font-bold block'>NAMA LENGKAP PENDIDIK:</label>
+            <input class='w-full px-2.5 py-1.5 bg-slate-900 border border-slate-800/80 rounded-lg text-[9.5px] text-slate-200 focus:outline-none focus:border-emerald-500 placeholder:text-slate-600' id='hub-nama' onchange='syncGlobalState()' placeholder='Masukkan nama lengkap...' type='text'/>
+          </div>
+
+          <div class='space-y-1'>
+            <label class='text-[8px] uppercase font-mono tracking-wider text-slate-500 font-bold block'>KUNCI INTEGRASI AI GEMINI:</label>
+            <input class='w-full px-2.5 py-1.5 bg-slate-900 border border-slate-800/80 rounded-lg text-[9.5px] text-slate-200 focus:outline-none focus:border-emerald-500 placeholder:text-slate-600 font-mono' id='hub-gemini' onchange='syncGlobalState()' placeholder='••••••••••••••••••••••••••••' type='password'/>
+            <p class='text-[7.5px] text-slate-500 mt-0.5'>Dapatkan API Key Gratis di <a class='text-emerald-400 hover:underline' href='https://aistudio.google.com/app/apikey' target='_blank'>Google AI Studio</a></p>
+          </div>
+
+          <!-- Explicit Save Button to solve Yustiani Razak suggestion -->
+          <div class='pt-1.5'>
+            <button class='w-full flex items-center justify-center gap-1.5 py-2 px-3 bg-[#10b981] hover:bg-[#059669] text-slate-950 rounded-lg text-[9px] font-mono font-extrabold tracking-wide transition uppercase shadow-lg shadow-emerald-500/10 hover:shadow-emerald-500/20 cursor-pointer' onclick='saveIdentitasDenganTombol()' type='button'>
+              <svg class='w-3.5 h-3.5 text-slate-950' fill='none' stroke='currentColor' style='stroke-width: 2.5' viewBox='0 0 24 24'>
+                <path d='M5 13l4 4L19 7' stroke-linecap='round' stroke-linejoin='round'/>
+              </svg>
+              <span>SIMPAN IDENTITAS GURU</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- WhatsApp Request & Donation Section (Opsi A) -->
+        <div class='pt-2.5 border-t border-slate-800/50 space-y-2'>
+          <a class='flex items-center justify-center gap-1.5 py-1.5 px-3 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/20 hover:border-emerald-500/40 rounded-lg text-[9px] font-mono font-bold tracking-wide transition uppercase' href='https://wa.me/6281313775419?text=Assalamualaikum%20Bapak%20Nursamsi,%20saya%20ingin%20meminta%20GuruID%20untuk%20siModArO.' target='_blank'>
+            <svg class='w-3.5 h-3.5 text-emerald-400' fill='none' stroke='currentColor' viewBox='0 0 24 24'><path d='M3 5a2 2 0 012-2h3.28a1 1 0 01.94.725l.548 2.2a1 1 0 01-.321.988l-1.305.98a10.582 10.582 0 004.872 4.872l.98-1.305a1 1 0 01.988-.321l2.2.548a1 1 0 01.725.94V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z' stroke-linecap='round' stroke-linejoin='round' stroke-width='2'/></svg>
+            <span>Minta GuruID via WA</span>
+          </a>
+          
+          <details class='group bg-slate-900/60 border border-slate-850 rounded-lg overflow-hidden text-[8px]'>
+            <summary class='flex items-center justify-between p-2.5 cursor-pointer list-none font-mono font-black text-amber-500 uppercase select-none'>
+              <span>💝 DONASI SEIKHLASNYA</span>
+              <svg class='w-3.5 h-3.5 text-amber-500 transition-transform group-open:rotate-180' fill='none' stroke='currentColor' viewBox='0 0 24 24'><path d='M19 9l-7 7-7-7' stroke-linecap='round' stroke-linejoin='round' stroke-width='2'/></svg>
+            </summary>
+            <div class='px-2.5 pb-2.5 space-y-1.5 border-t border-slate-800/50 mt-1 pt-2'>
+              <p class='text-slate-400 leading-normal text-justify'>
+                Dukung operasional secara sukarela via DANA / OVO / GOPAY:
+              </p>
+              <p class='font-mono text-emerald-400 text-center mt-1 font-black text-[9px]'>0895-3425-28110<br/><span class='text-[7.5px] font-bold text-slate-500'>(Nursamsi Muslim)</span></p>
+            </div>
+          </details>
+        </div>
+
+        <!-- Kotak Saran & Komentar Guru -->
+        <div class='pt-2.5 border-t border-slate-800/50 space-y-2'>
+          <div class='flex items-center gap-1.5 text-[8.5px] font-mono font-black text-amber-500 uppercase'>
+            <svg class='w-3.5 h-3.5 text-amber-400' fill='none' stroke='currentColor' viewBox='0 0 24 24'><path d='M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z' stroke-linecap='round' stroke-linejoin='round' stroke-width='2'/></svg>
+            <span>📝 KOTAK SARAN &amp; KOMENTAR:</span>
+          </div>
+          
+          <div class='space-y-1.5 p-2.5 bg-slate-900/40 border border-slate-850 rounded-lg'>
+            <div class='space-y-1'>
+              <label class='text-[7.5px] uppercase font-mono tracking-wider text-slate-500 font-bold block'>PILIH MODULAR (TIDAK WAJIB):</label>
+              <select class='w-full px-2 py-1 bg-slate-950 border border-slate-800 rounded-md text-[8.5px] text-slate-300 focus:outline-none focus:border-emerald-500 font-mono' id='saran-modular'>
+                <option value='Umum'>Umum / Semua Modul</option>
+                <option value='siModArO - Modul Ajar'>siModArO - Modul Ajar</option>
+                <option value='LittlePdf - PDF Builder'>LittlePdf - PDF Builder</option>
+                <option value='Kaldik - Kalender Pendidikan'>Kaldik - Kalender Akademik</option>
+                <option value='CP/TP Analyzer'>CP/TP Analyzer</option>
+                <option value='Developer Sandbox'>Developer Sandbox</option>
+              </select>
+            </div>
+
+            <div class='space-y-1'>
+              <label class='text-[7.5px] uppercase font-mono tracking-wider text-slate-500 font-bold block'>ISI SARAN / KOMENTAR GURU:</label>
+              <textarea class='w-full p-2 bg-slate-950 border border-slate-800 rounded-md text-[8.5px] text-slate-300 focus:outline-none focus:border-emerald-500 placeholder:text-slate-600 leading-normal resize-none' id='saran-text' placeholder='Tulis saran, keluhan, masukan untuk perbaikan atau update fitur...' rows='3'/>
+            </div>
+
+            <button class='w-full py-1.5 px-3 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/20 hover:border-amber-500/40 text-amber-400 rounded-lg text-[8px] font-mono font-bold tracking-wider transition uppercase' id='btn-kirim-saran' onclick='submitSaran()'>
+              🚀 KIRIM SARAN KE PUSAT
+            </button>
+          </div>
+        </div>
+
+        <p class='text-[8px] text-slate-500 leading-normal text-justify font-sans'>
+          Identitas ini akan diteruskan ke semua modul yang dibuka di sebelah kanan secara otomatis. Anda tidak perlu mengulang proses login atau pengisian data.
+        </p>
+      </div>
+
+    </div>
+
+    <!-- Footer Copyright -->
+    <div class='p-4 bg-slate-950 border-t border-slate-800 text-center'>
+      <p class='text-[8px] font-mono tracking-wider text-slate-600'>SMAN 1 AMONGGEDO &#169; 2026</p>
+      <p class='text-[7px] font-mono text-emerald-600 mt-0.5 uppercase'>Modular Hub Administration</p>
+    </div>
+  </aside>
+
+  <!-- Area Konten Utama (Iframe Viewer) -->
+  <main class='flex-1 bg-slate-950 flex flex-col overflow-hidden relative'>
+    
+    <!-- Header Iframe (Responsive Top Navigation) -->
+    <header class='bg-slate-900 border-b border-slate-800 flex flex-col p-4 shrink-0 gap-3.5 z-20'>
+      <!-- First Row: Title, Sidebar Trigger, & Action Buttons -->
+      <div class='flex flex-col sm:flex-row sm:items-center justify-between w-full gap-3'>
+        <div class='flex items-center gap-3'>
+          <!-- Toggle Sidebar Menu Button (Sleek Hamburger menu close to the border line) -->
+          <button class='p-2 bg-slate-950 hover:bg-slate-850 text-emerald-400 rounded-lg border border-slate-800 hover:text-emerald-350 transition cursor-pointer flex items-center justify-center shrink-0 shadow-lg' onclick='toggleSidebar()' title='Buka/Tutup Menu Samping'>
+            <svg class='w-4 h-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'><path d='M4 6h16M4 12h16M4 18h16' stroke-linecap='round' stroke-linejoin='round' stroke-width='2.2'/></svg>
+          </button>
+          
+          <div class='h-6 w-[1px] bg-slate-800 hidden sm:block'/>
+          
+          <div class='flex flex-col'>
+            <h2 class='text-[10px] font-mono tracking-widest text-emerald-400 uppercase font-black' id='blog-header-title'>PORTAL AKADEMIK SIMODARO</h2>
+            <span class='text-xs font-black tracking-wide display-font text-slate-100 flex items-center gap-2 mt-0.5'>
+              <span class='w-2 h-2 rounded-full' id='active-mod-indicator' style='background-color: var(--theme-accent)'/>
+              <span id='active-mod-title'>SEDANG MEMUAT MODUL...</span>
+            </span>
+          </div>
+        </div>
+
+        <div class='flex items-center gap-2 self-end sm:self-auto'>
+          <!-- Search Input to filter modules in top bar -->
+          <div class='relative'>
+            <span class='absolute inset-y-0 left-0 flex items-center pl-2.5 pointer-events-none text-slate-500'>
+              <svg class='w-3 h-3' fill='none' stroke='currentColor' viewBox='0 0 24 24'><path d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z' stroke-linecap='round' stroke-linejoin='round' stroke-width='2'/></svg>
+            </span>
+            <input class='w-32 sm:w-40 pl-7 pr-2.5 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-[9px] text-slate-300 focus:outline-none focus:border-emerald-500 placeholder:text-slate-600 font-mono' id='module-search-top' oninput='filterModules()' placeholder='Cari modul...' type='text'/>
+          </div>
+
+          <button class='p-1.5 bg-slate-800 hover:bg-slate-750 text-slate-300 rounded-lg border border-slate-700 hover:text-white transition cursor-pointer flex items-center gap-1.5 text-[10px] font-mono' onclick='reloadActiveIframe()'>
+            <svg class='w-3.5 h-3.5' fill='none' stroke='currentColor' viewBox='0 0 24 24'><path d='M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 3.562M9 9h10V9' stroke-linecap='round' stroke-linejoin='round' stroke-width='2'/></svg>
+            <span class='hidden md:inline'>RELOAD</span>
+          </button>
+          
+          <button class='p-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg border border-indigo-500 hover:text-white transition cursor-pointer flex items-center gap-1.5 text-[10px] font-sans font-bold shadow-md' onclick='openCurrentInNewTab()' title='Buka di Tab Baru untuk Login Google'>
+            <svg class='w-4 h-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14'/></svg>
+            <span class='hidden md:inline'>BUKA DI TAB BARU</span>
+          </button>
+          
+          <!-- Gear Settings Icon to switch to Admin module directly -->
+          <button class='p-1.5 bg-slate-800 hover:bg-slate-750 text-amber-500 rounded-lg border border-slate-700 hover:text-amber-400 transition cursor-pointer flex items-center gap-1.5 text-[10px] font-mono' onclick='selectModule("admin")' title='Admin &amp; Developer Hub'>
+            <svg class='w-4 h-4 animate-spin-hover' fill='none' stroke='currentColor' viewBox='0 0 24 24'><path d='M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z' stroke-linecap='round' stroke-linejoin='round' stroke-width='2'/><path d='M15 12a3 3 0 11-6 0 3 3 0 016 0z' stroke-linecap='round' stroke-linejoin='round' stroke-width='2'/></svg>
+            <span class='hidden md:inline'>ADMIN HUB</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Second Row: Horizontal Wrap List of Modules as Compact Buttons -->
+      <div class='flex flex-wrap items-center gap-2 pt-2.5 border-t border-slate-800/80 pr-1 relative z-50 overflow-visible' id='top-modules-container'>
+        <!-- Dinamis dari script JS: compact buttons without description -->
+      </div>
+    </header>
+
+    <!-- Sandbox Iframe Container -->
+    <div class='flex-1 relative bg-slate-900/10'>
+      <iframe allow='camera; microphone; geolocation; popups' sandbox='allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-forms allow-top-navigation allow-downloads' class='w-full h-full border-none animate-fade-in' id='main-hub-iframe' src=''/>
+      <!-- Under Development Overlay -->
+      <div class='absolute inset-0 bg-slate-950 flex flex-col items-center justify-center text-center p-6 hidden' id='dev-overlay'>
+        <div class='p-4 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-500 mb-4 animate-bounce' style='animation-duration: 3s'>
+          <svg class='w-12 h-12' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
+            <path d='M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5'/>
+          </svg>
+        </div>
+        <h2 class='text-xl font-bold text-slate-100 display-font uppercase tracking-wider'>Sedang Dalam Pengembangan</h2>
+        <p class='text-sm text-slate-400 mt-2 max-w-md mx-auto leading-relaxed'>
+          Modul ini belum diluncurkan secara resmi oleh Admin SMAN 1 Amonggedo. Silakan periksa kembali beberapa waktu ke depan!
+        </p>
+        <p class='text-[10px] text-slate-600 mt-2 font-mono uppercase tracking-widest'>
+          siModArO v.1 - Administrasi Setahun Tuntas Sekejap
+        </p>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Script Logika State Broker & Iframe Navigasi -->
+  <script type='text/javascript'>
+  //<![CDATA[
+    // Configured modules list injected dynamically
+    let MODULES = [
+  {
+    "id": "admin",
+    "name": "siModArO - Admin & Developer Hub",
+    "description": "Pusat konfigurasi, Kalender Pendidikan, pendaftaran GuruID, dan generator blueprint modular.",
+    "url": "https://ais-dev-k3l3nfmwij7hyxqj3knrf5-502754005172.asia-east1.run.app",
+    "icon": "ShieldAlert"
+  },
+  {
+    "id": "identitas",
+    "name": "siModArO - Identitas Guru",
+    "description": "Pengisian biodata guru, data sekolah SMAN 1 Amonggedo, & koneksi ke Google Drive.",
+    "url": "https://simodaro-identitas.vercel.app/",
+    "icon": "Award",
+    "underDevelopment": false
+  },
+  {
+    "id": "analisis-cp",
+    "name": "siModArO - Analisis CP",
+    "description": "Analisis Capaian Pembelajaran (CP) ke Tujuan Pembelajaran (TP) & penentuan Alur (ATP).",
+    "url": "https://simodaro-analisis-cp.blogspot.com",
+    "icon": "BookOpen",
+    "underDevelopment": true
+  },
+  {
+    "id": "alokasi-waktu",
+    "name": "siModArO - Analisis Alokasi Waktu",
+    "description": "Perhitungan rincian minggu efektif, kegiatan tidak efektif, dan distribusi jam pelajaran (JP).",
+    "url": "https://simodaro-alokasi-waktu.blogspot.com",
+    "icon": "Calendar",
+    "underDevelopment": true
+  },
+  {
+    "id": "kktp",
+    "name": "siModArO - KKTP",
+    "description": "Penyusunan Kriteria Ketercapaian Tujuan Pembelajaran dengan SOLO Taxonomy.",
+    "url": "https://simodaro-kktp.blogspot.com",
+    "icon": "Award",
+    "underDevelopment": true
+  },
+  {
+    "id": "modul-ajar",
+    "name": "siModArO - Modul Ajar",
+    "description": "Pembuatan RPP/Modul Ajar interaktif berbasis Deep Learning & kecerdasan AI Gemini.",
+    "url": "https://simodaro-modul-ajar.blogspot.com",
+    "icon": "Sparkles",
+    "underDevelopment": true
+  },
+  {
+    "id": "custom-i3x6sfi",
+    "name": "LittlePdf V1.3",
+    "description": "Aplikasi untuk Mengecilkan ukuran Pdf",
+    "url": "",
+    "icon": "Layers",
+    "underDevelopment": true
+  }
+];
+    const savedModules = localStorage.getItem("hub_modules");
+    if (savedModules) {
+      try {
+        MODULES = JSON.parse(savedModules);
+      } catch (e) {
+        console.error("Gagal membaca hub_modules", e);
+      }
+    }
+
+    // Initialize Firebase in Blogger layout
+    let db;
+    try {
+      firebase.initializeApp({"projectId":"simodaro-web","appId":"1:723460308896:web:4f5ff2dd382e84c0336ec5","apiKey":"AIzaSyA6EhknIaMSR4yOaT2R2T5_qds5NYmukSk","authDomain":"simodaro-web.firebaseapp.com","storageBucket":"simodaro-web.firebasestorage.app","messagingSenderId":"723460308896","measurementId":""});
+      db = firebase.firestore();
+    } catch (e) {
+      console.warn("Koneksi Firebase Cloud Offline, menggunakan local fallback.");
+    }
+
+    // Load State from local storage
+    document.getElementById("hub-guruid").value = localStorage.getItem("hub_guruid") || "";
+    document.getElementById("hub-nama").value = localStorage.getItem("hub_nama") || "";
+    document.getElementById("hub-gemini").value = localStorage.getItem("hub_gemini") || "";
+
+    // Load active module or default to first non-admin
+    let activeModuleId = localStorage.getItem("hub_active_module");
+    if (!activeModuleId || activeModuleId === "admin") {
+      const firstNonAdmin = MODULES.find(m => m.id !== 'admin');
+      activeModuleId = firstNonAdmin ? firstNonAdmin.id : MODULES[0].id;
+    }
+
+    // Render Top Navigation Modules (as compact buttons with tooltip on info icon)
+    function renderModules() {
+      const topNavContainer = document.getElementById("top-modules-container");
+      if (!topNavContainer) return;
+      topNavContainer.innerHTML = "";
+
+      MODULES.forEach(mod => {
+        // Exclude Admin & Developer Hub from regular modular list
+        if (mod.id === "admin") return;
+
+        // Create a wrapper group button element
+        const btn = document.createElement("div");
+        btn.id = "btn-" + mod.id;
+        btn.className = "group relative flex items-center bg-slate-900 border border-slate-800 hover:border-slate-700 rounded-xl px-3 py-1.5 transition duration-150 cursor-pointer select-none text-xs gap-2 pr-7";
+        
+        // Select module on click of the main button area (not the info icon)
+        btn.onclick = (e) => {
+          const target = e.target;
+          if (target && target.classList && target.classList.contains('info-trigger')) {
+            return; // Skip if they clicked the 'i' icon specifically
+          }
+          selectModule(mod.id);
+        };
+
+        // Clean prefix "siModArO - " from button text
+        const cleanName = mod.name.replace(/^siModArO\s*-\s*/i, '');
+        const titleSpan = document.createElement("span");
+        titleSpan.className = "font-extrabold text-slate-300 block tracking-wide module-title whitespace-nowrap";
+        titleSpan.innerText = cleanName;
+        btn.appendChild(titleSpan);
+
+        const isDev = mod.underDevelopment || !mod.url || mod.url.trim() === "" || mod.url.trim() === "#" || mod.url.trim().toLowerCase() === "belum ada" || mod.url.trim().toLowerCase() === "belum diset";
+        if (isDev) {
+          const devDot = document.createElement("span");
+          devDot.className = "w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0";
+          devDot.title = "Dalam Pengembangan";
+          btn.appendChild(devDot);
+        } else {
+          const activeDot = document.createElement("span");
+          activeDot.className = "w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0 animate-pulse";
+          activeDot.title = "Aktif";
+          btn.appendChild(activeDot);
+        }
+
+        // Information icon 'i' on top-right of the button
+        const infoSpan = document.createElement("span");
+        infoSpan.className = "info-trigger absolute top-1 right-1.5 w-3.5 h-3.5 rounded-full bg-slate-800 border border-slate-700 text-[8px] font-bold font-mono text-slate-400 hover:text-white hover:bg-slate-700 flex items-center justify-center cursor-help transition-colors duration-150";
+        infoSpan.innerText = "i";
+        btn.appendChild(infoSpan);
+
+        // Interactive Tooltip popover showing name, status, and description
+        const tooltip = document.createElement("div");
+        tooltip.className = "absolute top-full left-1/2 -translate-x-1/2 mt-2 w-64 p-3.5 bg-slate-900 border border-slate-700 text-slate-100 rounded-xl shadow-2xl opacity-0 scale-95 pointer-events-none transition-all duration-150 z-50 group-hover:opacity-100 group-hover:scale-100 group-focus-within:opacity-100 group-focus-within:scale-100 leading-relaxed text-justify";
+        
+        const tooltipHeader = document.createElement("div");
+        tooltipHeader.className = "font-extrabold text-xxs text-emerald-400 uppercase tracking-widest border-b border-slate-800 pb-1 mb-2 flex items-center justify-between gap-1";
+        
+        const tooltipTitle = document.createElement("span");
+        tooltipTitle.className = "truncate max-w-[150px]";
+        tooltipTitle.innerText = mod.name;
+        tooltipHeader.appendChild(tooltipTitle);
+
+        const tooltipBadge = document.createElement("span");
+        tooltipBadge.className = "shrink-0 text-[7px] font-extrabold px-1 py-0.5 rounded uppercase tracking-wider bg-slate-950 border " + (isDev ? "text-amber-500 border-amber-500/20" : "text-emerald-500 border-emerald-500/20");
+        tooltipBadge.innerText = isDev ? "🛠️ Dev" : "🟢 Aktif";
+        tooltipHeader.appendChild(tooltipBadge);
+        tooltip.appendChild(tooltipHeader);
+
+        const tooltipDesc = document.createElement("p");
+        tooltipDesc.className = "text-[10px] text-slate-300 font-sans font-medium normal-case leading-normal";
+        tooltipDesc.innerText = mod.description;
+        tooltip.appendChild(tooltipDesc);
+
+        btn.appendChild(tooltip);
+        topNavContainer.appendChild(btn);
+      });
+
+      // Highlight current active
+      selectModule(activeModuleId);
+    }
+
+    // Try fetching live modules from Firestore Cloud to avoid re-pasting the XML code
+    if (db) {
+      db.collection("school_settings").doc("modular_theme").get()
+        .then(docSnap => {
+          if (docSnap.exists) {
+            const cloudData = docSnap.data();
+            if (cloudData.title) {
+              document.title = cloudData.title;
+              const titleNode = document.getElementById("blog-header-title");
+              if (titleNode) titleNode.innerText = cloudData.title;
+            }
+            if (cloudData.accent) {
+              document.documentElement.style.setProperty('--theme-accent', cloudData.accent);
+              const indicator = document.getElementById("active-mod-indicator");
+              if (indicator) indicator.style.backgroundColor = cloudData.accent;
+            }
+            if (cloudData.saranUrl !== undefined) {
+              localStorage.setItem("hub_saran_url", cloudData.saranUrl);
+            }
+            if (cloudData.modules && cloudData.modules.length > 0) {
+              MODULES = cloudData.modules;
+              localStorage.setItem("hub_modules", JSON.stringify(MODULES));
+              renderModules();
+            }
+          }
+        })
+        .catch(err => {
+          console.warn("Gagal sinkron dari cloud, menggunakan local fallback:", err);
+        });
+    }
+
+    // Toggle Sidebar collapsible state
+    function toggleSidebar() {
+      const sidebar = document.getElementById("sidebar-panel");
+      if (sidebar) {
+        sidebar.classList.toggle("sidebar-collapsed");
+      }
+    }
+
+    // Dynamic Filter Modules via Top Search Input
+    function filterModules() {
+      const searchInput = document.getElementById("module-search-top");
+      if (!searchInput) return;
+      const query = searchInput.value.toLowerCase().trim();
+      MODULES.forEach(mod => {
+        if (mod.id === "admin") return;
+        const btn = document.getElementById("btn-" + mod.id);
+        if (btn) {
+          const matches = mod.name.toLowerCase().includes(query) || mod.description.toLowerCase().includes(query);
+          if (matches) {
+            btn.style.display = "flex";
+          } else {
+            btn.style.display = "none";
+          }
+        }
+      });
+    }
+
+    function selectModule(id) {
+      if (id === "admin") {
+        const adminMod = MODULES.find(m => m.id === "admin");
+        const adminUrl = adminMod ? adminMod.url : window.location.origin;
+        const guruId = encodeURIComponent(localStorage.getItem("hub_guruid") || "");
+        const nama = encodeURIComponent(localStorage.getItem("hub_nama") || "");
+        const gemini = encodeURIComponent(localStorage.getItem("hub_gemini") || "");
+        const divider = adminUrl.includes("?") ? "\x26" : "?";
+        const fullUrl = `${adminUrl}${divider}guruId=${guruId}\x26nama=${nama}\x26gemini=${gemini}`;
+        window.open(fullUrl, '_blank');
+        return;
+      }
+
+      const mod = MODULES.find(m => m.id === id) || MODULES[0];
+      activeModuleId = mod.id;
+      localStorage.setItem("hub_active_module", id);
+
+      // Highlight active button (only for non-admin items, admin relies on the gear)
+      MODULES.forEach(m => {
+        const el = document.getElementById("btn-" + m.id);
+        if (el) {
+          if (m.id === id) {
+            el.className = "group relative flex items-center bg-slate-850 rounded-xl px-3 py-1.5 transition duration-150 cursor-pointer select-none text-xs gap-2 pr-7 shadow-lg border-2";
+            el.style.borderColor = "var(--theme-accent)";
+            const titleEl = el.querySelector(".module-title");
+            if (titleEl) titleEl.style.color = "var(--theme-accent)";
+          } else {
+            el.className = "group relative flex items-center bg-slate-900 border border-slate-800 hover:border-slate-700 rounded-xl px-3 py-1.5 transition duration-150 cursor-pointer select-none text-xs gap-2 pr-7 text-slate-400";
+            el.style.borderColor = "";
+            const titleEl = el.querySelector(".module-title");
+            if (titleEl) titleEl.style.color = "#e2e8f0";
+          }
+        }
+      });
+
+      // Update Top Indicator
+      document.getElementById("active-mod-title").innerText = mod.name.toUpperCase();
+      
+      const iframe = document.getElementById("main-hub-iframe");
+      const devOverlay = document.getElementById("dev-overlay");
+      const isUnderDev = mod.underDevelopment || !mod.url || mod.url.trim() === "" || mod.url.trim() === "#" || mod.url.trim().toLowerCase() === "belum ada" || mod.url.trim().toLowerCase() === "belum diset";
+
+      if (isUnderDev) {
+        if (iframe) iframe.style.display = "none";
+        if (devOverlay) devOverlay.classList.remove("hidden");
+      } else {
+        if (iframe) iframe.style.display = "block";
+        if (devOverlay) devOverlay.classList.add("hidden");
+
+        // Load iframe with parameters so the children apps automatically receive configurations via URL
+        const guruId = encodeURIComponent(localStorage.getItem("hub_guruid") || "");
+        const nama = encodeURIComponent(localStorage.getItem("hub_nama") || "");
+        const gemini = encodeURIComponent(localStorage.getItem("hub_gemini") || "");
+        
+        const divider = mod.url.includes("?") ? "\x26" : "?";
+        const fullUrl = `${mod.url}${divider}guruId=${guruId}\x26nama=${nama}\x26gemini=${gemini}\x26embedded=true`;
+        
+        if (iframe) iframe.src = fullUrl;
+      }
+    }
+
+    function syncGlobalState() {
+      const gId = document.getElementById("hub-guruid").value.trim();
+      const nama = document.getElementById("hub-nama").value.trim();
+      const gemini = document.getElementById("hub-gemini").value.trim();
+
+      localStorage.setItem("hub_guruid", gId);
+      localStorage.setItem("hub_nama", nama);
+      localStorage.setItem("hub_gemini", gemini);
+
+      // Instantly propagate state to active iframe via postMessage
+      const iframe = document.getElementById("main-hub-iframe");
+      if (iframe && iframe.contentWindow) {
+        iframe.contentWindow.postMessage({
+          type: "SIMODARO_SYNC_STATE",
+          guruId: gId,
+          namaGuru: nama,
+          geminiApiKey: gemini
+        }, "*");
+      }
+    }
+
+    function saveIdentitasDenganTombol() {
+      syncGlobalState();
+      
+      // Remove any existing notification
+      const existing = document.getElementById("save-notif-toast");
+      if (existing) existing.remove();
+
+      // Show a green visual notification inside the page
+      const alertBox = document.createElement("div");
+      alertBox.id = "save-notif-toast";
+      alertBox.className = "fixed bottom-4 right-4 z-50 bg-emerald-500 text-slate-950 px-4 py-3 rounded-xl font-bold font-sans text-xs flex items-center gap-2 shadow-2xl transition-all duration-300 transform translate-y-0 opacity-100";
+      alertBox.style.boxShadow = "0 20px 25px -5px rgba(16, 185, 129, 0.2), 0 10px 10px -5px rgba(16, 185, 129, 0.1)";
+      alertBox.innerHTML = `
+        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="stroke-width: 2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+        <span>Identitas Guru & API Key Berhasil Disimpan Ke Browser!</span>
+      `;
+      document.body.appendChild(alertBox);
+      
+      setTimeout(() => {
+        alertBox.style.opacity = "0";
+        alertBox.style.transform = "translateY(10px)";
+        setTimeout(() => alertBox.remove(), 400);
+      }, 3500);
+    }
+
+    function reloadActiveIframe() {
+      selectModule(activeModuleId);
+    }
+
+    function openCurrentInNewTab() {
+      const mod = MODULES.find(m => m.id === activeModuleId);
+      if (mod && mod.url && mod.url !== "#" && mod.url.trim().toLowerCase() !== "belum ada" && mod.url.trim().toLowerCase() !== "belum diset") {
+        const rawGuruId = localStorage.getItem("hub_guruid") || "";
+        if (!rawGuruId) {
+          alert("Silakan isi dan simpan Identitas Guru (Guru ID) terlebih dahulu sebelum membuka modul di tab baru.");
+          return;
+        }
+        const guruId = encodeURIComponent(rawGuruId);
+        const nama = encodeURIComponent(localStorage.getItem("hub_nama") || "");
+        const gemini = encodeURIComponent(localStorage.getItem("hub_gemini") || "");
+        
+        const divider = mod.url.includes("?") ? "\x26" : "?";
+        const fullUrl = `${mod.url}${divider}guruId=${guruId}\x26nama=${nama}\x26gemini=${gemini}`;
+        window.open(fullUrl, '_blank');
+      } else {
+        alert("Modul belum tersedia atau sedang dalam perbaikan.");
+      }
+    }
+
+    async function submitSaran() {
+      const nama = document.getElementById("hub-nama").value.trim();
+      const guruId = document.getElementById("hub-guruid").value.trim();
+      const modular = document.getElementById("saran-modular").value;
+      const saran = document.getElementById("saran-text").value.trim();
+
+      if (!nama) {
+        alert("Silakan isi NAMA LENGKAP PENDIDIK terlebih dahulu di bagian Identitas Guru.");
+        return;
+      }
+      if (!saran) {
+        alert("Silakan tulis isi saran atau masukan Anda.");
+        return;
+      }
+
+      const btn = document.getElementById("btn-kirim-saran");
+      if (btn) {
+        btn.disabled = true;
+        btn.innerText = "⏳ MENGIRIM SARAN...";
+      }
+
+      const payload = {
+        namaGuru: nama,
+        guruId: guruId || "Tanpa ID",
+        modular: modular || "Umum",
+        saran: saran,
+        timestamp: new Date().toISOString()
+      };
+
+      try {
+        const sheetUrl = "https://script.google.com/macros/s/AKfycbyiGpLIAAc3Id6DuRFPHn-2XGatUb3IDdIFwPWB-zRhDJLrnzoSYx0Ic8-qb_IZdhV-Qg/exec" || localStorage.getItem("hub_saran_url") || "";
+        
+        let sheetSuccess = false;
+        if (sheetUrl && sheetUrl.startsWith("http")) {
+          try {
+            const formBody = new URLSearchParams();
+            formBody.append("namaGuru", payload.namaGuru);
+            formBody.append("guruId", payload.guruId);
+            formBody.append("modular", payload.modular);
+            formBody.append("saran", payload.saran);
+            
+            await fetch(sheetUrl, {
+              method: "POST",
+              mode: "no-cors",
+              headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+              },
+              body: formBody.toString()
+            });
+            sheetSuccess = true;
+          } catch (e) {
+            console.warn("Gagal mengirim ke sheet", e);
+          }
+        }
+        
+        let dbSuccess = false;
+        if (db) {
+          try {
+            const timeoutPromise = new Promise((_, reject) => 
+              setTimeout(() => reject(new Error("Timeout: Jaringan lambat atau offline. Pastikan rules Firestore mengizinkan write.")), 8000)
+            );
+            
+            await Promise.race([
+              db.collection("saran_komentar").add(payload),
+              timeoutPromise
+            ]);
+            dbSuccess = true;
+          } catch (e) {
+            console.warn("Gagal mengirim ke Firestore", e);
+          }
+        } 
+        
+        if (sheetSuccess || dbSuccess) {
+          alert("🎉 Terima kasih! Saran/Komentar Anda berhasil terkirim ke pusat data SMAN 1 Amonggedo.");
+          document.getElementById("saran-text").value = "";
+        } else {
+          // Offline fallback
+          const offline = JSON.parse(localStorage.getItem("offline_saran") || "[]");
+          offline.push(payload);
+          localStorage.setItem("offline_saran", JSON.stringify(offline));
+          alert("👍 Koneksi cloud sibuk. Saran disimpan sementara secara lokal & akan disinkronkan saat terhubung kembali!");
+          document.getElementById("saran-text").value = "";
+        }
+      } catch (err) {
+        console.error("Gagal mengirim saran:", err);
+        // Fallback local
+        const offline = JSON.parse(localStorage.getItem("offline_saran") || "[]");
+        offline.push(payload);
+        localStorage.setItem("offline_saran", JSON.stringify(offline));
+        alert("👍 Saran disimpan secara offline karena keterbatasan jaringan. Terima kasih!");
+        document.getElementById("saran-text").value = "";
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.innerText = "🚀 KIRIM SARAN KE PUSAT";
+        }
+      }
+    }
+
+    // Initial load
+    renderModules();
+
+    // Watch for postMessage feedback from modular apps
+    window.addEventListener("message", (event) => {
+      if (event.data && event.data.type === "SIMODARO_UPDATE_STATE") {
+        if (event.data.guruId) {
+          document.getElementById("hub-guruid").value = event.data.guruId;
+          localStorage.setItem("hub_guruid", event.data.guruId);
+        }
+        if (event.data.namaGuru) {
+          document.getElementById("hub-nama").value = event.data.namaGuru;
+          localStorage.setItem("hub_nama", event.data.namaGuru);
+        }
+        syncGlobalState();
+      } else if (event.data && event.data.type === "SIMODARO_SYNC_MODULES") {
+        if (event.data.modules) {
+          localStorage.setItem("hub_modules", JSON.stringify(event.data.modules));
+          window.location.reload();
+        }
+      }
+    });
+  //]]>
+  </script>
+
+  <!-- Blogger Mandatory Section -->
+  <div style='display:none;'>
+    <b:section id='main-blogger-section' maxwidgets='1' showaddelement='no'/>
+  </div>
+</body>
+</html>

@@ -16,8 +16,14 @@ export default function App() {
   // SIMULASI: Gunakan GuruID simulasi untuk mode pengembangan jika tidak ada dari URL
   const SIMULATION_GURUID = import.meta.env.DEV ? "GURU-AM-2D565" : null;
   
-  const [guruId, setGuruId] = useState<string | null>(SIMULATION_GURUID);
-  const [theme, setTheme] = useState<'light' | 'dark'>('light');
+  const [guruId, setGuruId] = useState<string | null>(() => {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('guruId') || SIMULATION_GURUID;
+  });
+  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
+    const params = new URLSearchParams(window.location.search);
+    return (params.get('theme') as 'light' | 'dark') || 'light';
+  });
   const [needsAuth, setNeedsAuth] = useState(true);
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -85,7 +91,10 @@ export default function App() {
     }
   };
 
+  const [loginError, setLoginError] = useState<string | null>(null);
+
   const handleLogin = async () => {
+    setLoginError(null);
     try {
       const result = await googleSignIn();
       if (result && guruId) {
@@ -93,8 +102,13 @@ export default function App() {
         setUser(result.user);
         loadData(result.accessToken, guruId);
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error("Login failed:", err);
+      if (err?.code === 'auth/unauthorized-domain') {
+         setLoginError("Domain belum diizinkan oleh Firebase. Silakan akses aplikasi melalui link resmi (Blogger).");
+      } else {
+         setLoginError(err.message || "Gagal masuk. Pastikan koneksi internet stabil.");
+      }
     }
   };
 
@@ -134,6 +148,24 @@ export default function App() {
             </svg>
             Sign in with Google
           </button>
+          
+          {loginError && (
+            <div className="mt-6 p-4 rounded-xl bg-red-100 border border-red-200 text-red-700 text-sm font-medium text-left">
+              <span className="font-bold block mb-1">Error Login:</span>
+              {loginError}
+            </div>
+          )}
+
+          {window.self !== window.top && (
+            <p className={`mt-4 text-xs text-center ${theme === 'dark' ? 'text-amber-500' : 'text-amber-600'}`}>
+              Jika login macet (hanya loading), <a 
+                href={`${window.location.origin}${window.location.pathname}?guruId=${encodeURIComponent(guruId || '')}&theme=${theme}`} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="underline font-bold"
+              >Buka di Tab Baru</a>.
+            </p>
+          )}
         </div>
       </div>
     );
